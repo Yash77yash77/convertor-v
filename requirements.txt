@@ -1,0 +1,9 @@
+flask==2.3.3
+opencv-python==4.8.1.78
+numpy==1.26.4
+Pillow>=8.4
+# Optional: install pillow-heif to read .heic files with Pillow
+pillow-heif>=0.9
+imageio>=2.31
+# Optional: If you want better HEIC support, install pyheif or pillow-heif
+# pyheif requires libheif available on your system; pillow-heif is pip-friendly

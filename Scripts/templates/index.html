@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Image to Video Converter 🎬</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        
+        .selected-effects {
+            margin-top: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border: 1px dashed #667eea;
+        }
+        
+        .effect-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin: 5px 5px 5px 0;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .status-section {
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid #eee;
+            display: none;
+        }
+        
+        .status-section.active {
+            display: block;
+        }
+        
+        .status-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .status-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .metadata-display {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+        
+        .metadata-item:last-child {
+            border-bottom: none;
+        }
+        
+        .metadata-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .metadata-value {
+            color: #667eea;
+        }
+        
+        .emoji {
+            font-size: 20px;
+        }
+        
+        .info-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span class="emoji">🎬</span>
+            Advanced Image to Video Converter
+        </h1>
+        <p class="subtitle">Transform images into stunning videos with advanced effects and quality options</p>
+        
+        <form id="conversionForm">
+            <!-- Input Section -->
+            <div class="form-section">
+                <div class="section-title">
+                    <span>📁</span> Input Settings
+                </div>
+                <div class="form-group">
+                    <label for="inputDir">Input Folder</label>
+                    <input 
+                        type="text" 
+                        id="inputDir" 
+                        value="Input" 
+                        placeholder="Enter input folder path"
+                        required
+                    >
+                    <div style="margin-top: 10px;">
+                        <button type="button" id="installDepsBtn">⚙️ Install Dependencies</button>
+                        <span id="installDepsStatus" style="margin-left:10px;color:#666"></span>
+                    </div>
+                    <p class="info-text">Default folder contains sample images</p>
+                </div>
+            </div>
+            
+            <!-- Motion Effects Section -->
+            <div class="form-section">
+                <div class="section-title">
+                    <span>✨</span> Motion Effects (Select 1-3)
+                </div>
+                <div class="checkbox-group" id="effectsCheckboxes">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="selected-effects" id="selectedEffects">
+                    <strong>Selected:</strong> <span id="selectedList">None</span>
+                </div>
+                <p class="info-text">Select multiple effects to combine them in sequence</p>
+            </div>
+            
+            <!-- Quality & Speed Section -->
+            <div class="form-section">
+                <div class="section-title">
+                    <span>⚙️</span> Quality & Speed Settings
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="quality">📺 Video Quality</label>
+                        <select id="quality" required>
+                            <option value="4K">4K (3840x2160) - Ultra HD</option>
+                            <option value="1080p" selected>1080p (1920x1080) - Full HD</option>
+                            <option value="720p">720p (1280x720) - HD</option>
+                            <option value="480p">480p (854x480) - Standard</option>
+                            <option value="360p">360p (640x360) - Low</option>
+                        </select>
+                        <p class="info-text">Higher quality = larger file size</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fps">⚡ Speed (FPS)</label>
+                        <input 
+                            type="number" 
+                            id="fps" 
+                            value="10" 
+                            min="5" 
+                            max="60"
+                            required
+                        >
+                        <p class="info-text">Frames per second (5-60)</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="duration">⏱️ Video Duration (seconds)</label>
+                    <input 
+                        type="number" 
+                        id="duration" 
+                        value="5" 
+                        min="1" 
+                        max="30"
+                        required
+                    >
+                    <p class="info-text">Duration of each video (1-30 seconds)</p>
+                </div>
+            </div>
+            
+            <!-- Convert Button -->
+            <button type="submit" id="startBtn">🚀 Start Conversion</button>
+        </form>
+        
+        <!-- Status Section -->
+        <div class="status-section" id="statusSection">
+            <div class="status-title">📊 Conversion Progress</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="status-text" id="statusText">Initializing...</div>
+            <div class="status-message info" id="statusMessage">Job queued</div>
+            
+            <!-- Metadata Display -->
+            <div class="metadata-display" id="metadataDisplay" style="display: none;">
+                <div style="font-weight: 600; margin-bottom: 10px;">📈 Conversion Details</div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Start Time:</span>
+                    <span class="metadata-value" id="metaStartTime">-</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">End Time:</span>
+                    <span class="metadata-value" id="metaEndTime">-</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Processing Time:</span>
+                    <span class="metadata-value" id="metaProcessingTime">-</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Videos Created:</span>
+                    <span class="metadata-value" id="metaVideoCount">-</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Quality:</span>
+                    <span class="metadata-value" id="metaQuality">-</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Motion Effects:</span>
+                    <span class="metadata-value" id="metaEffects">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const form = document.getElementById('conversionForm');
+        const startBtn = document.getElementById('startBtn');
+        const statusSection = document.getElementById('statusSection');
+        const progressFill = document.getElementById('progressFill');
+        const statusText = document.getElementById('statusText');
+        const statusMessage = document.getElementById('statusMessage');
+        const metadataDisplay = document.getElementById('metadataDisplay');
+        const effectsCheckboxes = document.getElementById('effectsCheckboxes');
+        const selectedList = document.getElementById('selectedList');
+        
+        let currentJobId = null;
+        let statusCheckInterval = null;
+        let allEffects = {};
+        let selectedEffects = [];
+        
+        // Load available effects on page load
+        async function loadEffects() {
+            try {
+                const response = await fetch('/api/effects');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                allEffects = await response.json();
+                console.log('Loaded effects:', allEffects);
+                populateEffectsCheckboxes();
+            } catch (error) {
+                console.error('Error loading effects:', error);
+                statusMessage.textContent = `Failed to load effects: ${error.message}`;
+                statusMessage.className = 'status-message error';
+            }
+        }
+        
+        function populateEffectsCheckboxes() {
+            effectsCheckboxes.innerHTML = '';
+            for (const [key, label] of Object.entries(allEffects)) {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="effect_${key}" value="${key}" name="effect">
+                    <label for="effect_${key}">${label}</label>
+                `;
+                // Attach listener to the input element (not the container div)
+                const checkbox = div.querySelector('input[type="checkbox"]');
+                checkbox.addEventListener('change', updateSelectedEffects);
+                effectsCheckboxes.appendChild(div);
+            }
+        }
+        
+        function updateSelectedEffects() {
+            const checkboxes = document.querySelectorAll('input[name="effect"]:checked');
+            selectedEffects = Array.from(checkboxes).map(cb => cb.value);
+            
+            // Debug logging
+            console.log('Selected effects:', selectedEffects);
+            
+            if (selectedEffects.length > 3) {
+                // Uncheck the last checkbox
+                checkboxes[checkboxes.length - 1].checked = false;
+                // Recalculate without recursion
+                selectedEffects = Array.from(document.querySelectorAll('input[name="effect"]:checked')).map(cb => cb.value);
+                alert('Maximum 3 effects can be combined');
+                updateSelectedEffects();
+                return;
+            }
+            
+            if (selectedEffects.length === 0) {
+                selectedList.textContent = 'None (Select at least 1)';
+            } else {
+                selectedList.innerHTML = selectedEffects
+                    .map(effect => `<div class="effect-tag">${allEffects[effect]}</div>`)
+                    .join('');
+            }
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (selectedEffects.length === 0) {
+                alert('Please select at least one motion effect');
+                return;
+            }
+            
+            const inputDir = document.getElementById('inputDir').value;
+            const quality = document.getElementById('quality').value;
+            const fps = parseInt(document.getElementById('fps').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            
+            console.log('Form submission - Selected effects:', selectedEffects);
+            console.log('Form data:', {inputDir, quality, fps, duration, motion_types: selectedEffects});
+            
+            startBtn.disabled = true;
+            statusSection.classList.add('active');
+            metadataDisplay.style.display = 'none';
+            statusMessage.className = 'status-message info';
+            statusMessage.textContent = '⏳ Starting conversion...';
+            
+            try {
+                const payload = {
+                    input_dir: inputDir,
+                    motion_types: selectedEffects,
+                    quality: quality,
+                    fps: fps,
+                    duration: duration
+                };
+                
+                console.log('Sending to server:', JSON.stringify(payload));
+                
+                const response = await fetch('/batch-start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                console.log('Server response:', data);
+                currentJobId = data.job_id;
+                
+                // Start polling for status
+                statusCheckInterval = setInterval(checkStatus, 500);
+            } catch (error) {
+                statusMessage.className = 'status-message error';
+                statusMessage.textContent = `❌ Error: ${error.message}`;
+                startBtn.disabled = false;
+                console.error('Submission error:', error);
+            }
+        });
+
+        // Install dependencies button handler (POST to /install-deps)
+        document.getElementById('installDepsBtn').addEventListener('click', async () => {
+            const statusEl = document.getElementById('installDepsStatus');
+            statusEl.textContent = 'Installing...';
+            try {
+                const resp = await fetch('/install-deps', { method: 'POST' });
+                const data = await resp.json();
+                if (resp.ok && data.returncode === 0) {
+                    statusEl.textContent = '✅ Installed';
+                } else {
+                    statusEl.textContent = `❌ Install failed: ${data.stderr ? data.stderr.slice(0,200) : data.error}`;
+                }
+            } catch (err) {
+                statusEl.textContent = `❌ Error: ${err.message}`;
+            }
+        });
+        
+        async function checkStatus() {
+            if (!currentJobId) return;
+            
+            try {
+                const response = await fetch(`/status/${currentJobId}`);
+                const data = await response.json();
+                
+                const progress = data.progress || 0;
+                progressFill.style.width = progress + '%';
+                statusText.textContent = `${progress}% - ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}`;
+                
+                if (data.status === 'done') {
+                    clearInterval(statusCheckInterval);
+                    statusMessage.className = 'status-message success';
+                    statusMessage.textContent = `✅ ${data.message}`;
+                    
+                    if (data.metadata) {
+                        displayMetadata(data);
+                        metadataDisplay.style.display = 'block';
+                    }
+                    
+                    startBtn.disabled = false;
+                } else if (data.status === 'error') {
+                    clearInterval(statusCheckInterval);
+                    statusMessage.className = 'status-message error';
+                    statusMessage.textContent = `❌ Error: ${data.message}`;
+                    startBtn.disabled = false;
+                } else if (data.status === 'running') {
+                    statusMessage.className = 'status-message info';
+                    statusMessage.textContent = `⏳ Converting... (${data.output_count} videos processed)`;
+                } else if (data.status === 'queued') {
+                    statusMessage.className = 'status-message info';
+                    statusMessage.textContent = '⏳ Job queued, waiting to start...';
+                }
+            } catch (error) {
+                console.error('Status check error:', error);
+            }
+        }
+        
+        function displayMetadata(data) {
+            const meta = data.metadata || {};
+            document.getElementById('metaStartTime').textContent = meta.start_time || '-';
+            document.getElementById('metaEndTime').textContent = meta.end_time || '-';
+            document.getElementById('metaProcessingTime').textContent = 
+                (meta.total_processing_time ? meta.total_processing_time + 's' : '-');
+            document.getElementById('metaVideoCount').textContent = meta.videos_created || '0';
+            document.getElementById('metaQuality').textContent = meta.quality || '-';
+            document.getElementById('metaEffects').textContent = 
+                (meta.motion_effects ? meta.motion_effects.join(' + ') : '-');
+        }
+        
+        // Load effects when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadEffects);
+        } else {
+            loadEffects();
+        }
+    </script>
+</body>
+</html>
